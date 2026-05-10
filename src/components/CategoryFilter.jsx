@@ -6,6 +6,7 @@ export function CategoryFilter({ categories, activeCategoryId, onChange }) {
         <button
           className={!activeCategoryId ? 'filter-button active' : 'filter-button'}
           type="button"
+          aria-pressed={!activeCategoryId}
           onClick={() => onChange(null)}
         >
           Все товары
@@ -14,6 +15,7 @@ export function CategoryFilter({ categories, activeCategoryId, onChange }) {
           <button
             className={activeCategoryId === category.id ? 'filter-button active' : 'filter-button'}
             type="button"
+            aria-pressed={activeCategoryId === category.id}
             key={category.id}
             onClick={() => onChange(category.id)}
           >

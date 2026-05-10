@@ -1,9 +1,9 @@
 import { Link, NavLink } from 'react-router-dom'
-import { useCart } from '../context/useCart.js'
+import { useAppSelector } from '../app/hooks.js'
+import { selectCartCount } from '../features/cart/cartSelectors.js'
 
 export function Header({ variant = 'default' }) {
-  const { getCartCount } = useCart()
-  const cartCount = getCartCount()
+  const cartCount = useAppSelector(selectCartCount)
   const isSimple = variant === 'simple'
 
   return (
@@ -16,6 +16,7 @@ export function Header({ variant = 'default' }) {
 
         <nav className="header-nav" aria-label="Основная навигация">
           <NavLink to="/catalog">Каталог</NavLink>
+          <NavLink to="/orders">Заказы</NavLink>
           {!isSimple && (
             <NavLink className="cart-link" to="/cart">
               <span>Корзина</span>

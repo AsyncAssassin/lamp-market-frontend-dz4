@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
+import { useAppSelector } from '../app/hooks.js'
+import { selectLastCreatedOrder } from '../features/orders/ordersSelectors.js'
 import { formatPrice } from '../utils/formatPrice.js'
-import { readLastOrder } from '../utils/storage.js'
 
 function formatDate(value) {
   return new Intl.DateTimeFormat('ru-RU', {
@@ -9,16 +10,26 @@ function formatDate(value) {
   }).format(new Date(value))
 }
 
+const STATUS_LABELS = {
+  new: 'Новый',
+  confirmed: 'Подтвержден',
+  processing: 'В обработке',
+  shipped: 'Отправлен',
+  delivered: 'Доставлен',
+  cancelled: 'Отменен',
+}
+
 export function OrderSuccessPage() {
   const location = useLocation()
-  const order = location.state?.order ?? readLastOrder()
+  const lastCreatedOrder = useAppSelector(selectLastCreatedOrder)
+  const order = lastCreatedOrder ?? location.state?.order
 
   if (!order) {
     return (
       <section className="confirm-card">
         <span className="success-mark" aria-hidden="true" />
         <h1>Заказ пока не сформирован</h1>
-        <p>Оформите заказ через корзину, чтобы увидеть подтверждение.</p>
+        <p>Оформите корзину, чтобы увидеть подтверждение.</p>
         <div className="confirm-actions">
           <Link className="btn btn-primary" to="/catalog">
             В каталог
@@ -34,7 +45,7 @@ export function OrderSuccessPage() {
   return (
     <section className="confirm-card">
       <span className="success-mark" aria-hidden="true" />
-      <h1>Заказ №{order.id} оформлен!</h1>
+      <h1>Заказ №{order.id} оформлен</h1>
       <p>Мы свяжемся с вами для подтверждения.</p>
 
       <dl className="order-facts">
@@ -44,17 +55,33 @@ export function OrderSuccessPage() {
         </div>
         <div>
           <dt>Статус</dt>
-          <dd>{order.status}</dd>
+          <dd>{STATUS_LABELS[order.status] ?? order.status}</dd>
         </div>
         <div>
           <dt>Сумма</dt>
-          <dd>{formatPrice(order.total)}</dd>
+          <dd>{formatPrice(order.totalAmount)}</dd>
         </div>
       </dl>
 
-      <Link className="btn btn-primary" to="/catalog">
-        Вернуться в каталог
-      </Link>
+      <div className="summary-lines order-success-items">
+        {order.items.map((item) => (
+          <div className="summary-line" key={item.id}>
+            <span>
+              {item.productName} x {item.quantity}
+            </span>
+            <strong>{formatPrice(item.subtotal)}</strong>
+          </div>
+        ))}
+      </div>
+
+      <div className="confirm-actions">
+        <Link className="btn btn-primary" to="/catalog">
+          Вернуться в каталог
+        </Link>
+        <Link className="btn btn-outline" to="/orders">
+          Мои заказы
+        </Link>
+      </div>
     </section>
   )
 }

@@ -1,0 +1,10 @@
+export const selectOrders = (state) => state.orders.items
+export const selectOrdersTotal = (state) => state.orders.total
+export const selectOrdersStatus = (state) => state.orders.listStatus
+export const selectOrdersListError = (state) => state.orders.ordersListError
+export const selectSelectedOrder = (state) => state.orders.selectedOrder
+export const selectSelectedOrderStatus = (state) => state.orders.detailsStatus
+export const selectLastCreatedOrder = (state) => state.orders.lastCreatedOrder
+export const selectOrderCreateStatus = (state) => state.orders.createStatus
+export const selectOrderCreateError = (state) => state.orders.createError
+export const selectOrderDetailsError = (state) => state.orders.detailsError
